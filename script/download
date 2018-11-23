@@ -1,0 +1,10 @@
+#!/bin/sh
+# Download MBTiles files from NOAA
+
+echo "Updating catalog"
+curl https://tileservice.charts.noaa.gov/mbtiles/mbtiles_catalog.json > catalog.json
+
+
+jq -r '.quilted_tilesets | to_entries | .[].value | .url, .updates_url' catalog.json |
+  sed -e 's/^/https:/g' |
+  xargs -n 1 curl -OC -
